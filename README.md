@@ -118,5 +118,115 @@ var output = "the output is": +
        }
 });
 
+    4. Using ES6 class syntax: 
+    ```JS
+      class myObject  {
+        constructor(name) {
+          this.name = name;
+        }
+      }   
+      var e = new myObject("hello");
+    ```
 
+
+## Prototype or prototypical inharitance in Javascript
+```JS
+funciton PersonFactory(fname, lname){
+  return {
+    "firstname":fname,
+	"lastName" : lname,
+	"greet": funciton(){
+	  return "Hello"+firstname+" "+ lastName;
+	} //greet
+  }; //return
+} //PersonFactory
+let person1  = PersonFactory("persoon1","Deo");
+let person2  = PersonFactory("persoon2","Smit");
+```
+ **Heere there is is big problem of greet funciton, each object has it's own greet function that can consume lots of memory**
+ * To avoid it we can use prototypical inharitance
+ * Each function/object has a inbuild property : prototype/__proto__ that points to either any other object or null
+```
+let obj1 = {greet:funciton(){return "Hello Mr." + name}}
+let obje2 {name: saurabh,__proto__:obj1} 
+or obj2.__proto__ = obj1;
+obj2.greet();
+```
+### In case of functional constructor programming 
+```
+Person(fname,lname) {}
+Employe {
+Person.call(this,fname,lname);
+}
+Employe.prototype =new Person();
+```
+* call calls the function in context of pirst argument and subsequent argument are passed in function 
+* apply calls the funciton in context of first argument and second argument is an array that is passed to functions subsequent arg
+function sayHello(){return this.name;}
+* Use .bind() when you want that function to later be called with a certain contex
+```
+sayHello()// will throw error since wont fine this.sayhello;
+obj {name:"John"}
+sayHello.call(obj);or sayHello.apply(obj)
+```
+
+## ECMA6 or ECMA 2015
+ * Class: Can say a constructor function
+```
+ class Vehicle {
+   constructor (name, type) {
+    this.name = name;
+    this.type = type;
+  }
+   getName () {
+    return this.name;
+  }
+   getType () {
+    return this.type;
+  }
+ }
+ ```
+**ES5 equivalent could be something like this**
+```
+function Vehicle (name, type) {
+  this.name = name;
+  this.type = type;
+};
+ Vehicle.prototype.getName = function getName () {
+  return this.name;
+};
+Vehicle.prototype.getType = function getType () {
+  return this.type;
+};
+```
+**Basically when we create an object of Vehical class**
+  * It create a constructor function 
+  * And add getName and getType method in function's prototype;
+  * it can have static data also, It wont be a part of object
+  
+### inheritance
+```
+class Car extends Vehicle {
+   constructor (name) {
+    super(name, 'car');
+  }
+   getName () {
+    return 'It is a car: ' + super.getName();
+  }
+ }
+```
+**ES5 equivalent could be something like this**
+```
+function Car (name) {
+  Vehicle.call(this, name, ‘car’);
+}
+Car.prototype = Object.create(Vehicle.prototype);
+Car.prototype.constructor = Car;
+Car.parent = Vehicle.prototype;
+Car.prototype.getName = function () {
+  return 'It is a car: '+ this.name;
+};
+```
+
+	
  [JS-Interview-QA]: <https://www.toptal.com/javascript/interview-questions>
