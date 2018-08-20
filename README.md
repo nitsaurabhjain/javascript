@@ -80,6 +80,7 @@ var output = "the output is": +
 ```
 
 * Minimize DOM usages whenever possible because it's expensive operation
+  * **I believe DOM is a swming pool and element is coin. so it's not good to dive in swming pool to find the coin**
 
 ## Some more point about JS
 *  ==, !=  perform type convension
@@ -228,5 +229,294 @@ Car.prototype.getName = function () {
 };
 ```
 
-	
+##  Privacy 
+ we can achieve privacy by using closer.
+```JS
+var Person = (function() {
+let privateData = new WeakMap();
+   class Person {
+     constructor(fname,lname){
+          privateData.set(this, { fname: fname, lname:lname });
+       }
+  fullName(){
+   return privateData.get(this).fname + " " +privateData.get(this).fname;
+  }
+ }
+   return Person;
+}());
+let emp = new Person("John","doe");
+console.log(emp.fullName());
+```
+
+## JavaScript Immutable
+> **Note:**  It works only in **'use strict'** mode
+```
+const object1 = {
+  property1: 42
+};
+Object.freeze(object1);
+object1.property1 = 33;
+// Throws an error in strict mode
+console.log(object1.property1);
+// expected output: 42
+```
+
+
+##  this in JavaScript
+ 1. **this** determined only when a function is called
+ 2. in each funciton is called in an executional context and it's pointed by this keyboard
+ 3. if functin is callded directly then, this points to window object **Note:** in strict mode this point to undefined instead of window.
+ex:-
+```
+function foo(){
+var name ="foo";
+baz();
+}
+function baz(){
+ console.log(this.name);
+}
+var name ="window"
+foo();
+```
+> output : window # because 
+> foo.call(obj); or foo.app(obj)//calls the foo function on "obj" object in another words obj is 'this' in foo funciton.
+>call and apply both are same, the only diff is way of passing argument
+>food.bind(obj) //bind the foo funciton to obj ie keyboard this would be obj inside food function.
+## new 
+ var add =  new food(){
+     var this = {}; //automatically an object is created and assigned to this ;
+	 ... expression 1...
+	 ...  expression n...
+	 return this; //At the end of this keyboard is returned;
+ }
+> so add =this; //at the end of function called with new keyboard
+###  keyboard new has higher precedance then explicit binding ie
+  new fn.call(obj) > fn.call(obj) >  global
+
+## JavaScript Design Patter
+ 1. **Callback** : In this, we give control to call a function to another function/API.  callback is a kind of inverse of control means we are giving control to someone else to call our function
+ 1.  **IIFE** (immediately invocable function expression), example JQuery
+ ```
+ let calculator = (function($){
+      let element = document.getElementById("calResult");
+	  document.addEventListener("click", funciton(event){
+	    let target = event.target;
+		if(target.match("=")){
+		    eval();
+		}
+		if(target.match("calResult")){
+		    return;
+		}
+		  add(target);
+	  });
+	  let memory =[];
+	  let calc={};
+	  calc.add = funciton(value){
+	       element.innherHtml = elment.innnerHtml+value;
+	  };
+	  calc.eval : funciton(){
+         element.innherHtml = evel(elment.innnerHtml)
+      };
+	  return calc;
+	  
+})(jQuery);
+
+```
+1.  module, ex require
+
+
+## import export modules
+```
+// module "my-module.js"
+function cube(x) {
+  return x * x * x;
+}
+const foo = Math.PI + Math.SQRT2;
+var graph = {
+    options:{
+        color:'white',
+        thickness:'2px'
+    },
+    draw: function(){
+        console.log('From graph draw function');
+    }
+}
+export { cube, foo, graph };
+
+// use the module in diff file
+import { cube, foo, graph } from 'my-module';
+graph.options = {
+    color:'blue',
+    thickness:'3px'
+}; 
+graph.draw();
+console.log(cube(3)); // 27
+console.log(foo); 
+
+// using default export ("my-module.js")
+export default function cube(x) {
+  return x * x * x;
+}
+
+import Cube from 'my-module'; // here cube is assigned to Cube it happens in case of default export
+console.log(cube(3)); // 27
+```
+
+ 
+# AND THE REAL STORY BEGINS NOW
+## Advance JavaScirpt
+*  Javascript execute the code in two pass
+    1. Hoisting (variable and function hoisting)
+    1. Parse and run
+ 
+
+### JavaScirpt Hoisting
+ *  JavaScript shift the all variable and function declaration, declared by "var" keyboard at the top  of it's scope is called hoisting 
+ *  Remember variables  declared by let keyboard are not hoisted
+ *  function or variable are overridden if we declare them again
+ * >Example
+```
+(function(){
+g();
+  function g(){
+    console.log("g");
+    f();
+  }
+var  f = function(){
+      console.log("first");
+    };
+})();
+#after hoisting
+(function(){
+  function g(){  //function comes first in hoisting
+    console.log("g");
+    f();
+  }
+  var f; // after function variables are declared
+g();
+f = function(){
+      console.log("first");
+    };
+})();
+#output : -f is not a funciton
+```
+## JavaScript has two scope  
+1) functional and
+2) block.
+
+* JavaScript first find the variable in local scope if not find then go to immediate upper label and so on and if still not find then
+    1.  (in not strict mode )it declare at top most label (window) and assign a value undefined ie var name =undefined;
+    2. (in strict mode)  if variable is not found then it gives error like undeclared
+*  undefined means when we declare a variable but not assign any value. 
+* undeclared means we have even not declared any **var** and trying to use it.
+* ECMA6 has indroduce a **'let'** keyboard to declare block label variable which is not hoisted
+## Function declaration and function expression
+*  if 'function' is the first keyboard in statement then it's function declaration; ex. funciton myFn(){};
+* rest is 'function expression' ex var fun = function myFn(){};
+* Use function declaration over function expression to take advantage of hoisting
+ ## Never ever use it ?? bad cause
+```
+function myFunc(str){
+var a =12;
+eval(str);
+console.log(a) //output 20
+}
+myFunc("var a=20;");
+```
+
+## Dynamic scoping
+```
+funciton foo(){
+ console.log(this.str); //print "dynamic scope"
+}
+var obj1 = {str:"obj1"}
+var obj2 = {str:"obj2"}
+obj1.foo(); //obj1
+obj1.foo(); //obj2
+```
+
+## Closer
+When we define a function inside another function and expose it, the inner function will have access to the variables/function of  outer function scope, even after the outer function has finished.
+
+ * Lexical scoping : function find some variable inside it then it use it otherwise it find the variable at it's immediate parent function and so on... is called lexical or compile time scoping.
+**Closer : when a function use lexical scope to resolves it's variable/function scope is called closer**
+
+## JavaScirpt Fucntion and Object Relations 
+*  JavaScript is actually an object oriented language
+*  Java is not object oriented actually it's class oriented.
+* In JS everything is object, even function and it is linked to an anonymous object by **\_\_proto\_\_** prototype property.
+* each function has a hidden property named **prototype** that is linked to an anonymous object.
+* Each object has a hidden property named **\_\_proto\_\_** that is linked to an anonymous object
+* When we create an object by **new funciton()** then in that case function's **prototype** property and object's **\_\_proto__** property points to same anonymous object
+* the anonymous object has a property called **constructor** that points to function
+ie
+```
+then Foo.prototype  = ao;
+and ao.constructor = Foo;
+var obj = new Foo();
+obj.__proto__ == ao
+```
+* JavaScript has a build in function named 'Function()' that also point to an anonymous obj (say aof) (having call apply, bind funciton)
+
+* In JavaScript, each function is an object so it also has constructor property.
+```
+Foo.constructor = Function
+Foo.__proto__ =  aof
+```
+* Dont say or never say JavaScirpt has inharitance because inharitance means one object copy the something from other obj.
+* JavaScirpt have prototypical inharitance means one object does not copy anything from another obj, it just links them called
+**OLOO : object linked to other object**
+## Object inharitance machenics;
+```
+var obj1 ={
+  add: add(a,b){};
+  del: del(){}
+}
+var obj2  =  Object.create(obj1); //create an obj2 whose prototype is obj ie obj2__proto__ = obj
+obj.add();
+```
+**another way**
+```
+function Foo(){...}
+funciion Bar(){ Foo.appply(this).....}
+Bar.prototype =Object.create(Foo.prototype); 
+//or 
+Bar.prototype =new Foo(); 
+```
+ 
+##  ECMA6 new feature like Promise,  Generator -yield, async-await function.
+```
+function resolveAfter2Seconds() {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve('resolved');
+    }, 2000);
+  });
+}
+async function asyncCall() {
+  console.log('calling');
+  //**await can only be used inside async function**
+  var result = await resolveAfter2Seconds();
+  console.log(result);
+  return "async done";
+}
+asyncCall().then(function(val){
+console.log(val);
+});
+```
+## Generator function example
+```
+function* idMaker() {
+  var index = 0;
+  while (index < 3)
+    yield index++;
+}
+var gen = idMaker();
+console.log(gen.next().value); // 0
+console.log(gen.next().value); // 1
+console.log(gen.next().value); // 2
+console.log(gen.next().value); // undefined
+```
+ 
  [JS-Interview-QA]: <https://www.toptal.com/javascript/interview-questions>
+ [stackedit]: <https://stackedit.io/app#>
