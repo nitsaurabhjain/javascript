@@ -283,12 +283,14 @@ foo();
 >call and apply both are same, the only diff is way of passing argument
 >food.bind(obj) //bind the foo funciton to obj ie keyboard this would be obj inside food function.
 ## new 
+```
  var add =  new food(){
      var this = {}; //automatically an object is created and assigned to this ;
 	 ... expression 1...
 	 ...  expression n...
 	 return this; //At the end of this keyboard is returned;
  }
+ ```
 > so add =this; //at the end of function called with new keyboard
 ###  keyboard new has higher precedance then explicit binding ie
   new fn.call(obj) > fn.call(obj) >  global
@@ -431,8 +433,8 @@ funciton foo(){
 }
 var obj1 = {str:"obj1"}
 var obj2 = {str:"obj2"}
-obj1.foo(); //obj1
-obj1.foo(); //obj2
+foo(obj1); //obj1
+foo(obj2); //obj2
 ```
 
 ## Closer
