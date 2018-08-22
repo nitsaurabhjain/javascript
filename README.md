@@ -519,6 +519,16 @@ console.log(gen.next().value); // 1
 console.log(gen.next().value); // 2
 console.log(gen.next().value); // undefined
 ```
+
+## JS Event Loop
+
+* Javascript is a single threaded programming language with asyn feature(provided by Web API)
+* stack   - Wabapi () {event like settimeout, click, ajax call etc}
+* Event Loop (runs in infinite loop and check if stack is free then pick the task from que and put it to stack)
+* Event Que - Web API transfer the task to event queue.
+   
+
+
  
  [JS-Interview-QA]: <https://www.toptal.com/javascript/interview-questions>
  [stackedit]: <https://stackedit.io/app#>
